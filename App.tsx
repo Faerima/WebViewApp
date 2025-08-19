@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, useColorScheme } from 'react-native';
 import OrderWebView from './src/OrderWebView';
 
 /**
@@ -9,8 +9,11 @@ import OrderWebView from './src/OrderWebView';
  * SafeAreaView wird in OrderWebView gehandhabt
  */
 export default function App() {
+  const colorScheme = useColorScheme();
+  const backgroundColor = colorScheme === 'dark' ? '#2C2C2E' : '#F8E5C2';
+  
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor }]}>
       <OrderWebView
         visible={true}
         onClose={() => {}} // Kein Schließen möglich - App ist die WebView
@@ -25,6 +28,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8E5C2', // Passend zum Splash Screen
+    // backgroundColor wird dynamisch gesetzt
   },
 });

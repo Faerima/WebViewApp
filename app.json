@@ -12,29 +12,26 @@
       "backgroundColor": "#F8E5C2"
     },
     "updates": { "fallbackToCacheTimeout": 0 },
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "statusBar": {
-      "style": "dark",
-      "backgroundColor": "#F8E5C2"
+      "style": "auto"
     },
     "ios": { 
       "supportsTablet": false, 
       "bundleIdentifier": "ch.roemerhof.webviewapp",
       "statusBar": {
-        "style": "dark"
+        "style": "auto"
       }
     },
     "android": { 
       "package": "ch.roemerhof.webviewapp",
       "edgeToEdgeEnabled": false,
       "statusBar": {
-        "style": "dark",
-        "backgroundColor": "#F8E5C2",
+        "style": "auto",
         "translucent": false,
         "hidden": false
       },
       "navigationBar": {
-        "backgroundColor": "#F8E5C2",
         "visible": true
       },
       "softwareKeyboardLayoutMode": "pan"

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { SafeAreaView, View, Text, TouchableOpacity, ActivityIndicator, Linking, StyleSheet, Platform, BackHandler, StatusBar } from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity, ActivityIndicator, Linking, StyleSheet, Platform, BackHandler, StatusBar, useColorScheme } from 'react-native';
 import { WebView, WebViewNavigation, WebViewProps } from 'react-native-webview';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -38,6 +38,16 @@ export default function OrderWebView({
   const [connected, setConnected] = useState(true);
   const [loading, setLoading] = useState(true);
   const [canGoBack, setCanGoBack] = useState(false);
+  const colorScheme = useColorScheme();
+
+  // Dynamische StatusBar-Konfiguration basierend auf Color Scheme
+  const getStatusBarConfig = () => {
+    const isDark = colorScheme === 'dark';
+    return {
+      barStyle: isDark ? 'light-content' : 'dark-content',
+      backgroundColor: isDark ? '#2C2C2E' : '#F8E5C2', // Dunkler Hintergrund für Dark Mode
+    };
+  };
 
   // Überwache Netzwerkverbindung
   useEffect(() => {
@@ -114,12 +124,14 @@ export default function OrderWebView({
     return null;
   }
 
+  const statusBarConfig = getStatusBarConfig();
+
   return (
-    <View style={styles.container}>
-      {/* StatusBar explizit konfigurieren */}
+    <View style={[styles.container, { backgroundColor: statusBarConfig.backgroundColor }]}>
+      {/* StatusBar dynamisch an Light/Dark Mode angepasst */}
       <StatusBar 
-        barStyle="dark-content"
-        backgroundColor="#F8E5C2"
+        barStyle={statusBarConfig.barStyle as any}
+        backgroundColor={statusBarConfig.backgroundColor}
         translucent={false}
       />
       
@@ -170,7 +182,7 @@ export default function OrderWebView({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8E5C2', // Splash-Farbe für Übergänge
+    // backgroundColor wird dynamisch gesetzt
   },
   safeArea: {
     flex: 1,
