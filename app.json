@@ -26,12 +26,15 @@
     },
     "android": { 
       "package": "ch.roemerhof.webviewapp",
+      "edgeToEdgeEnabled": false,
       "statusBar": {
         "style": "dark",
-        "backgroundColor": "#F8E5C2"
+        "backgroundColor": "#F8E5C2",
+        "translucent": false
       },
       "navigationBar": {
-        "backgroundColor": "#F8E5C2"
+        "backgroundColor": "#F8E5C2",
+        "visible": true
       }
     },
     "extra": {

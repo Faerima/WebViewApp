@@ -115,51 +115,46 @@ export default function OrderWebView({
   }
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        {/* Offline-Hinweis */}
-        {!connected && (
-          <View style={styles.offline}>
-            <Text>Keine Internetverbindung</Text>
-            <TouchableOpacity onPress={() => NetInfo.fetch().then(s => setConnected(!!s.isConnected))}>
-              <Text style={styles.retry}>Erneut versuchen</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        
-        {/* Loading Indicator */}
-        {loading && <ActivityIndicator size="large" style={styles.loader} />}
-        
-        {/* WebView mit korrekten Insets */}
-        <WebView
-          ref={webRef}
-          source={{ uri: startUrl }}
-          originWhitelist={['https://*']}
-          onNavigationStateChange={onNavChange}
-          onShouldStartLoadWithRequest={onShouldStart}
-          startInLoadingState
-          javaScriptEnabled
-          domStorageEnabled
-          sharedCookiesEnabled
-          thirdPartyCookiesEnabled
-          setSupportMultipleWindows={false}
-          injectedJavaScript={injectedJS}
-          onMessage={event => onEvent({ type: 'message', payload: event.nativeEvent.data })}
-          mixedContentMode={Platform.OS === 'android' ? 'always' : 'never'}
-          style={styles.webview}
-          // Wichtig: Automatische Insets für Notch/SafeArea
-          automaticallyAdjustContentInsets={true}
-          contentInsetAdjustmentBehavior="automatic"
-          // Pull-to-Refresh aktivieren
-          pullToRefreshEnabled={true}
-          bounces={true}
-          // Bessere Scroll-Performance
-          decelerationRate="normal"
-          showsVerticalScrollIndicator={true}
-          showsHorizontalScrollIndicator={false}
-        />
-      </SafeAreaView>
-    </View>
+    <SafeAreaView style={styles.container}>
+      {/* Offline-Hinweis */}
+      {!connected && (
+        <View style={styles.offline}>
+          <Text>Keine Internetverbindung</Text>
+          <TouchableOpacity onPress={() => NetInfo.fetch().then(s => setConnected(!!s.isConnected))}>
+            <Text style={styles.retry}>Erneut versuchen</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      
+      {/* Loading Indicator */}
+      {loading && <ActivityIndicator size="large" style={styles.loader} />}
+      
+      {/* WebView ohne automatische Insets - SafeAreaView regelt das */}
+      <WebView
+        ref={webRef}
+        source={{ uri: startUrl }}
+        originWhitelist={['https://*']}
+        onNavigationStateChange={onNavChange}
+        onShouldStartLoadWithRequest={onShouldStart}
+        startInLoadingState
+        javaScriptEnabled
+        domStorageEnabled
+        sharedCookiesEnabled
+        thirdPartyCookiesEnabled
+        setSupportMultipleWindows={false}
+        injectedJavaScript={injectedJS}
+        onMessage={event => onEvent({ type: 'message', payload: event.nativeEvent.data })}
+        mixedContentMode={Platform.OS === 'android' ? 'always' : 'never'}
+        style={styles.webview}
+        // Pull-to-Refresh aktivieren
+        pullToRefreshEnabled={true}
+        bounces={true}
+        // Bessere Scroll-Performance
+        decelerationRate={0.998}
+        showsVerticalScrollIndicator={true}
+        showsHorizontalScrollIndicator={false}
+      />
+    </SafeAreaView>
   );
 }
 
@@ -167,9 +162,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8E5C2', // Splash-Farbe für Übergänge
-  },
-  safeArea: {
-    flex: 1,
   },
   webview: {
     flex: 1,
