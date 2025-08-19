@@ -4,14 +4,28 @@ Eine vollständig konfigurierte React Native/Expo App mit WebView-Komponente fü
 
 ## 🚀 Features
 
+### Core Features
 - **Wiederverwendbare WebView-Komponente** (`OrderWebView.tsx`)
 - **Host-Whitelist** für sichere Navigation
 - **Externe Links** öffnen automatisch im Systembrowser
+- **Session/Cookie-Management** für persistente Logins
+- **EAS Build** Konfiguration für `.aab` Erstellung
+
+### UX/UI Features
+- **Direkter App-Start** zur Roemerhof URL (kein Startscreen)
+- **Dynamic Light/Dark Mode** Support mit automatischer StatusBar-Anpassung
+- **Pull-to-Refresh** Funktionalität
+- **Hardware Back Button** Navigation (Android)
 - **Offline-Erkennung** mit Retry-Funktion
 - **Zoom-Deaktivierung** für mobile Optimierung
-- **Session/Cookie-Management** für persistente Logins
 - **Event-Callbacks** für Navigation und Messages
-- **EAS Build** Konfiguration für `.aab` Erstellung
+
+### Technical Features
+- **SafeAreaView** mit korrekten Insets für Notch/StatusBar
+- **Edge-to-Edge** deaktiviert um UI-Überlappungen zu vermeiden
+- **StatusBar** explizit konfiguriert mit `translucent: false`
+- **Platform-spezifisches Padding** als Fallback für Android
+- **Automatische Theme-Erkennung** mit `useColorScheme`
 
 ## 📋 Voraussetzungen (einmalig)
 
@@ -76,17 +90,43 @@ npm run credentials
 - **EAS Dashboard**: https://expo.dev/accounts/[username]/projects/webviewapp/builds
 - `.aab` Datei herunterladen für Play Console Upload
 
+## 🔧 Implementierte Verbesserungen
+
+### Version 2.0 - UX/UI Optimierungen
+1. **Direkter App-Start** - Entfernung des Startscreens für sofortigen Zugang
+2. **Dismiss-Gesten** - Hardware Back Button und Pull-to-Refresh implementiert
+3. **Edge-to-Edge Fix** - StatusBar-Überlappung behoben
+4. **Dynamic Light/Dark Mode** - Automatische Theme-Anpassung der StatusBar
+5. **Code-Optimierung** - Alle Logs entfernt, englische Kommentare
+
+### Technische Fixes
+- **SafeAreaView Struktur** vereinfacht um Konflikte zu vermeiden
+- **StatusBar-Komponente** explizit hinzugefügt mit `translucent: false`
+- **Platform-spezifisches Padding** für Android `StatusBar.currentHeight`
+- **app.json Konfiguration** für `edgeToEdgeEnabled: false`
+- **WebView decelerationRate** Fehler behoben (String → Number)
+
 ## 📱 Qualitätssicherung (QA-Checkliste)
 
 Vor der Veröffentlichung testen:
 
+### Basis-Funktionalität
 - ✅ App öffnet **https://roemerhof.kuriersoft.ch/**
 - ✅ Navigation innerhalb erlaubter Hosts funktioniert
 - ✅ Externe Links öffnen sich im **Systembrowser**
-- ✅ **Offline-Hinweis** erscheint (Flugmodus testen)
-- ✅ **Splash Screen** und **App Icon** sichtbar
 - ✅ **Session/Login** bleiben erhalten nach App-Restart
 - ✅ **Warenkorb** und **Checkout-Prozess** funktional
+
+### UX/UI Tests
+- ✅ **Direkter Start** zur Website (kein Startscreen)
+- ✅ **StatusBar sichtbar** - Zeit, Batterie nicht überdeckt
+- ✅ **Hardware Back Button** funktioniert für WebView-Navigation
+- ✅ **Pull-to-Refresh** funktioniert
+- ✅ **Light/Dark Mode** StatusBar passt sich automatisch an
+- ✅ **Offline-Hinweis** erscheint (Flugmodus testen)
+
+### Build & Deployment
+- ✅ **Splash Screen** und **App Icon** sichtbar
 - ✅ `.aab` lässt sich in **Play Console → Internal testing** hochladen
 
 ## 🔧 Komponenten-Übersicht
@@ -96,17 +136,29 @@ Wiederverwendbare WebView-Komponente mit folgenden Props:
 
 ```typescript
 type OrderWebViewProps = {
-  visible: boolean;                    // Modal Sichtbarkeit
-  onClose: () => void;                 // Schließen Callback
-  startUrl?: string;                   // Start-URL (default: Roemerhof)
-  allowedHosts?: string[];             // Erlaubte Hosts (default: roemerhof.kuriersoft.ch)
-  disableZoom?: boolean;               // Zoom deaktivieren (default: true)
-  onEvent?: (e: {type: string; payload?: any}) => void;  // Event Callbacks
+  visible: boolean;                    // Component visibility
+  onClose: () => void;                 // Close callback (unused in direct mode)
+  startUrl?: string;                   // Start URL (default: Roemerhof)
+  allowedHosts?: string[];             // Allowed hosts (default: roemerhof.kuriersoft.ch)
+  disableZoom?: boolean;               // Disable zoom (default: true)
+  onEvent?: (e: {type: string; payload?: any}) => void;  // Event callbacks
 };
 ```
 
+**Features:**
+- Dynamic Light/Dark Mode support with `useColorScheme`
+- Hardware back button navigation (Android)
+- Pull-to-refresh functionality
+- Offline detection with retry
+- External link handling (opens in system browser)
+- Host whitelist security
+- Cookie/session management
+- Zoom disable for mobile optimization
+
 ### `App.tsx`
-Demo-Implementation der OrderWebView Komponente.
+Main app component that launches OrderWebView directly without start screen.
+- Dynamic background color based on system theme
+- Simplified structure for better performance
 
 ## 🔄 Wiederverwendung
 

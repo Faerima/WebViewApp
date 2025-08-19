@@ -3,10 +3,10 @@ import { View, StyleSheet, useColorScheme } from 'react-native';
 import OrderWebView from './src/OrderWebView';
 
 /**
- * Roemerhof Bestellungen App
+ * Roemerhof Orders App
  * 
- * Startet direkt mit der WebView für https://roemerhof.kuriersoft.ch/
- * SafeAreaView wird in OrderWebView gehandhabt
+ * Launches directly with WebView for https://roemerhof.kuriersoft.ch/
+ * SafeAreaView is handled within OrderWebView component
  */
 export default function App() {
   const colorScheme = useColorScheme();
@@ -16,10 +16,10 @@ export default function App() {
     <View style={[styles.container, { backgroundColor }]}>
       <OrderWebView
         visible={true}
-        onClose={() => {}} // Kein Schließen möglich - App ist die WebView
+        onClose={() => {}} // No closing possible - App is the WebView
         startUrl="https://roemerhof.kuriersoft.ch/"
         allowedHosts={['roemerhof.kuriersoft.ch','www.roemerhof.kuriersoft.ch']}
-        onEvent={(e) => console.log('WebView event:', e)}
+        onEvent={(e) => {}} // Event handler for WebView events
       />
     </View>
   );
@@ -28,6 +28,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor wird dynamisch gesetzt
+    // backgroundColor is set dynamically based on color scheme
   },
 });

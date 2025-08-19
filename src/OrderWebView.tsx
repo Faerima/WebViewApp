@@ -15,16 +15,19 @@ type OrderWebViewProps = {
 const DEFAULT_URL = 'https://roemerhof.kuriersoft.ch/';
 
 /**
- * Wiederverwendbare WebView-Komponente für Online-Bestellungen
+ * Reusable WebView component for online ordering
  * 
  * Features:
- * - Vollbildmodus mit Modal
- * - Host-Whitelist für sichere Navigation
- * - Externe Links öffnen im Systembrowser
- * - Offline-Erkennung mit Retry-Funktion
- * - Zoom-Deaktivierung für mobile Optimierung
- * - Event-Callbacks für Navigation und Messages
- * - Cookie-Unterstützung für Session-Management
+ * - Full-screen WebView without modal overlay
+ * - Host whitelist for secure navigation
+ * - External links open in system browser
+ * - Offline detection with retry functionality
+ * - Zoom disable for mobile optimization
+ * - Event callbacks for navigation and messages
+ * - Cookie support for session management
+ * - Dynamic Light/Dark Mode support
+ * - Hardware back button navigation (Android)
+ * - Pull-to-refresh functionality
  */
 export default function OrderWebView({
   visible,
@@ -40,41 +43,41 @@ export default function OrderWebView({
   const [canGoBack, setCanGoBack] = useState(false);
   const colorScheme = useColorScheme();
 
-  // Dynamische StatusBar-Konfiguration basierend auf Color Scheme
+  // Dynamic StatusBar configuration based on color scheme
   const getStatusBarConfig = () => {
     const isDark = colorScheme === 'dark';
     return {
       barStyle: isDark ? 'light-content' : 'dark-content',
-      backgroundColor: isDark ? '#2C2C2E' : '#F8E5C2', // Dunkler Hintergrund für Dark Mode
+      backgroundColor: isDark ? '#2C2C2E' : '#F8E5C2', // Dark background for Dark Mode
     };
   };
 
-  // Überwache Netzwerkverbindung
+  // Monitor network connection
   useEffect(() => {
     const unsub = NetInfo.addEventListener(s => setConnected(!!s.isConnected));
     return () => unsub();
   }, []);
 
-  // Hardware Zurück-Button (Android)
+  // Hardware back button handling (Android)
   useEffect(() => {
     if (!visible) return;
     
     const backAction = () => {
       if (canGoBack && webRef.current) {
         webRef.current.goBack();
-        return true; // Event behandelt
+        return true; // Event handled
       }
-      return false; // Normale App-Exit Behandlung
+      return false; // Normal app exit handling
     };
 
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
     return () => backHandler.remove();
   }, [visible, canGoBack]);
 
-  // Injiziertes JavaScript zum Deaktivieren von Zoom
+  // Injected JavaScript to disable zoom
   const injectedJS = useMemo(() => {
     if (!disableZoom) return '';
-    // Setzt den Viewport und verhindert Pinch-to-Zoom
+    // Sets viewport and prevents pinch-to-zoom
     return `(function(){
       var m=document.querySelector('meta[name=viewport]');
       if(!m){ m=document.createElement('meta'); m.name='viewport'; document.head.appendChild(m); }
@@ -83,21 +86,21 @@ export default function OrderWebView({
     })();`;
   }, [disableZoom]);
 
-  // Extrahiert Hostname aus URL
+  // Extract hostname from URL
   const getHost = (url: string) => {
     try { return new URL(url).hostname; } catch { return ''; }
   };
 
-  // Prüft ob Host in Whitelist enthalten ist
+  // Check if host is in whitelist
   const isAllowedHost = (url: string) => allowedHosts.includes(getHost(url));
 
-  // Öffnet externe Links im Systembrowser
+  // Open external links in system browser
   const handleExternal = (url: string) => {
     Linking.openURL(url).catch(() => {});
     onEvent({ type: 'externalLink', payload: { url } });
   };
 
-  // Navigation State Change Handler
+  // Navigation state change handler
   const onNavChange = (nav: WebViewNavigation) => {
     setLoading(false);
     setCanGoBack(nav.canGoBack);
@@ -110,7 +113,7 @@ export default function OrderWebView({
     onEvent({ type: 'navigation', payload: { url: nav.url, canGoBack: nav.canGoBack } });
   };
 
-  // Should Start Load Handler (iOS/Android)
+  // Should start load handler (iOS/Android)
   const onShouldStart: WebViewProps['onShouldStartLoadWithRequest'] = req => {
     if (!isAllowedHost(req.url)) {
       handleExternal(req.url);
@@ -119,7 +122,7 @@ export default function OrderWebView({
     return true;
   };
 
-  // Wenn nicht sichtbar, nichts rendern
+  // If not visible, render nothing
   if (!visible) {
     return null;
   }
@@ -128,7 +131,7 @@ export default function OrderWebView({
 
   return (
     <View style={[styles.container, { backgroundColor: statusBarConfig.backgroundColor }]}>
-      {/* StatusBar dynamisch an Light/Dark Mode angepasst */}
+      {/* StatusBar dynamically adapted to Light/Dark Mode */}
       <StatusBar 
         barStyle={statusBarConfig.barStyle as any}
         backgroundColor={statusBarConfig.backgroundColor}
@@ -136,20 +139,20 @@ export default function OrderWebView({
       />
       
       <SafeAreaView style={styles.safeArea}>
-        {/* Offline-Hinweis */}
+        {/* Offline notification */}
         {!connected && (
           <View style={styles.offline}>
-            <Text>Keine Internetverbindung</Text>
+            <Text>No internet connection</Text>
             <TouchableOpacity onPress={() => NetInfo.fetch().then(s => setConnected(!!s.isConnected))}>
-              <Text style={styles.retry}>Erneut versuchen</Text>
+              <Text style={styles.retry}>Try again</Text>
             </TouchableOpacity>
           </View>
         )}
         
-        {/* Loading Indicator */}
+        {/* Loading indicator */}
         {loading && <ActivityIndicator size="large" style={styles.loader} />}
         
-        {/* WebView */}
+        {/* WebView with full configuration */}
         <WebView
           ref={webRef}
           source={{ uri: startUrl }}
@@ -166,10 +169,10 @@ export default function OrderWebView({
           onMessage={event => onEvent({ type: 'message', payload: event.nativeEvent.data })}
           mixedContentMode={Platform.OS === 'android' ? 'always' : 'never'}
           style={styles.webview}
-          // Pull-to-Refresh aktivieren
+          // Enable pull-to-refresh
           pullToRefreshEnabled={true}
           bounces={true}
-          // Bessere Scroll-Performance
+          // Better scroll performance
           decelerationRate={0.998}
           showsVerticalScrollIndicator={true}
           showsHorizontalScrollIndicator={false}
@@ -182,11 +185,11 @@ export default function OrderWebView({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor wird dynamisch gesetzt
+    // backgroundColor is set dynamically based on color scheme
   },
   safeArea: {
     flex: 1,
-    // Zusätzliches Padding für Android falls SafeAreaView nicht ausreicht
+    // Additional padding for Android if SafeAreaView is not sufficient
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0,
   },
   webview: {
