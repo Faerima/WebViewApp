@@ -1,26 +1,29 @@
-import React, { useState } from 'react';
-import { View, Button } from 'react-native';
+import React from 'react';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import OrderWebView from './src/OrderWebView';
 
 /**
- * Demo-App für die OrderWebView Komponente
+ * Roemerhof Bestellungen App
  * 
- * Zeigt die Verwendung der wiederverwendbaren WebView-Komponente
- * mit der Roemerhof Bestellseite als Beispiel.
+ * Startet direkt mit der WebView für https://roemerhof.kuriersoft.ch/
  */
 export default function App() {
-  const [open, setOpen] = useState(true);
-  
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={styles.container}>
       <OrderWebView
-        visible={open}
-        onClose={() => setOpen(false)}
+        visible={true}
+        onClose={() => {}} // Kein Schließen möglich - App ist die WebView
         startUrl="https://roemerhof.kuriersoft.ch/"
         allowedHosts={['roemerhof.kuriersoft.ch','www.roemerhof.kuriersoft.ch']}
         onEvent={(e) => console.log('WebView event:', e)}
       />
-      <Button title="Web öffnen" onPress={() => setOpen(true)} />
-    </View>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8E5C2', // Passend zum Splash Screen
+  },
+});

@@ -12,8 +12,28 @@
       "backgroundColor": "#F8E5C2"
     },
     "updates": { "fallbackToCacheTimeout": 0 },
-    "ios": { "supportsTablet": false, "bundleIdentifier": "ch.roemerhof.webviewapp" },
-    "android": { "package": "ch.roemerhof.webviewapp" },
+    "userInterfaceStyle": "light",
+    "statusBar": {
+      "style": "dark",
+      "backgroundColor": "#F8E5C2"
+    },
+    "ios": { 
+      "supportsTablet": false, 
+      "bundleIdentifier": "ch.roemerhof.webviewapp",
+      "statusBar": {
+        "style": "dark"
+      }
+    },
+    "android": { 
+      "package": "ch.roemerhof.webviewapp",
+      "statusBar": {
+        "style": "dark",
+        "backgroundColor": "#F8E5C2"
+      },
+      "navigationBar": {
+        "backgroundColor": "#F8E5C2"
+      }
+    },
     "extra": {
       "startUrl": "https://roemerhof.kuriersoft.ch/"
     }

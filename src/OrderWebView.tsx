@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Modal, SafeAreaView, View, Text, TouchableOpacity, ActivityIndicator, Linking, StyleSheet, Platform } from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity, ActivityIndicator, Linking, StyleSheet, Platform, BackHandler } from 'react-native';
 import { WebView, WebViewNavigation, WebViewProps } from 'react-native-webview';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -37,12 +37,29 @@ export default function OrderWebView({
   const webRef = useRef<WebView>(null);
   const [connected, setConnected] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [canGoBack, setCanGoBack] = useState(false);
 
   // Überwache Netzwerkverbindung
   useEffect(() => {
     const unsub = NetInfo.addEventListener(s => setConnected(!!s.isConnected));
     return () => unsub();
   }, []);
+
+  // Hardware Zurück-Button (Android)
+  useEffect(() => {
+    if (!visible) return;
+    
+    const backAction = () => {
+      if (canGoBack && webRef.current) {
+        webRef.current.goBack();
+        return true; // Event behandelt
+      }
+      return false; // Normale App-Exit Behandlung
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => backHandler.remove();
+  }, [visible, canGoBack]);
 
   // Injiziertes JavaScript zum Deaktivieren von Zoom
   const injectedJS = useMemo(() => {
@@ -73,12 +90,14 @@ export default function OrderWebView({
   // Navigation State Change Handler
   const onNavChange = (nav: WebViewNavigation) => {
     setLoading(false);
+    setCanGoBack(nav.canGoBack);
+    
     if (!isAllowedHost(nav.url)) {
       handleExternal(nav.url);
       webRef.current?.stopLoading();
       return;
     }
-    onEvent({ type: 'navigation', payload: { url: nav.url } });
+    onEvent({ type: 'navigation', payload: { url: nav.url, canGoBack: nav.canGoBack } });
   };
 
   // Should Start Load Handler (iOS/Android)
@@ -90,9 +109,14 @@ export default function OrderWebView({
     return true;
   };
 
+  // Wenn nicht sichtbar, nichts rendern
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <SafeAreaView style={{ flex: 1 }}>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
         {/* Offline-Hinweis */}
         {!connected && (
           <View style={styles.offline}>
@@ -106,7 +130,7 @@ export default function OrderWebView({
         {/* Loading Indicator */}
         {loading && <ActivityIndicator size="large" style={styles.loader} />}
         
-        {/* WebView */}
+        {/* WebView mit korrekten Insets */}
         <WebView
           ref={webRef}
           source={{ uri: startUrl }}
@@ -120,43 +144,55 @@ export default function OrderWebView({
           thirdPartyCookiesEnabled
           setSupportMultipleWindows={false}
           injectedJavaScript={injectedJS}
-          // Android: öffnet target=_blank nicht in neuem Fenster
           onMessage={event => onEvent({ type: 'message', payload: event.nativeEvent.data })}
           mixedContentMode={Platform.OS === 'android' ? 'always' : 'never'}
+          style={styles.webview}
+          // Wichtig: Automatische Insets für Notch/SafeArea
+          automaticallyAdjustContentInsets={true}
+          contentInsetAdjustmentBehavior="automatic"
+          // Pull-to-Refresh aktivieren
+          pullToRefreshEnabled={true}
+          bounces={true}
+          // Bessere Scroll-Performance
+          decelerationRate="normal"
+          showsVerticalScrollIndicator={true}
+          showsHorizontalScrollIndicator={false}
         />
-        
-        {/* Schließen Button */}
-        <TouchableOpacity style={styles.close} onPress={onClose}>
-          <Text>Schliessen</Text>
-        </TouchableOpacity>
       </SafeAreaView>
-    </Modal>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8E5C2', // Splash-Farbe für Übergänge
+  },
+  safeArea: {
+    flex: 1,
+  },
+  webview: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
   offline: { 
     padding: 16, 
     alignItems: 'center', 
-    backgroundColor: '#fff' 
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   },
   retry: { 
     marginTop: 8, 
-    textDecorationLine: 'underline' 
+    textDecorationLine: 'underline',
+    color: '#2196F3',
   },
   loader: { 
     position: 'absolute', 
     top: '50%', 
     left: '50%', 
     marginLeft: -10, 
-    marginTop: -10 
+    marginTop: -10,
+    zIndex: 1000,
   },
-  close: { 
-    position: 'absolute', 
-    right: 16, 
-    top: 12, 
-    padding: 8, 
-    backgroundColor: '#eee', 
-    borderRadius: 8 
-  }
 });
