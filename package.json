@@ -1,12 +1,17 @@
 {
   "name": "webviewapp",
   "version": "1.0.0",
+  "description": "React Native WebView App für Roemerhof Online-Bestellungen",
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "build:android": "eas build -p android --profile production",
+    "build:android:local": "eas build -p android --local --profile production",
+    "build:configure": "eas build:configure",
+    "credentials": "eas credentials -p android"
   },
   "dependencies": {
     "expo": "~53.0.20",

@@ -1,29 +1,21 @@
 {
   "expo": {
     "name": "WebViewApp",
-    "slug": "WebViewApp",
+    "slug": "webviewapp",
+    "scheme": "webviewapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F8E5C2"
     },
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "updates": { "fallbackToCacheTimeout": 0 },
+    "ios": { "supportsTablet": false, "bundleIdentifier": "ch.roemerhof.webviewapp" },
+    "android": { "package": "ch.roemerhof.webviewapp" },
+    "extra": {
+      "startUrl": "https://roemerhof.kuriersoft.ch/"
     }
   }
 }

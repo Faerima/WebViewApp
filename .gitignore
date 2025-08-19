@@ -35,3 +35,9 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Build artifacts (wichtig für kleine ZIPs)
+*.keystore
+*.jks
+*.p12
+*.pem
