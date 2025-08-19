@@ -30,12 +30,14 @@
       "statusBar": {
         "style": "dark",
         "backgroundColor": "#F8E5C2",
-        "translucent": false
+        "translucent": false,
+        "hidden": false
       },
       "navigationBar": {
         "backgroundColor": "#F8E5C2",
         "visible": true
-      }
+      },
+      "softwareKeyboardLayoutMode": "pan"
     },
     "extra": {
       "startUrl": "https://roemerhof.kuriersoft.ch/"

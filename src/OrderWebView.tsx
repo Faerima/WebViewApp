@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { SafeAreaView, View, Text, TouchableOpacity, ActivityIndicator, Linking, StyleSheet, Platform, BackHandler } from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity, ActivityIndicator, Linking, StyleSheet, Platform, BackHandler, StatusBar } from 'react-native';
 import { WebView, WebViewNavigation, WebViewProps } from 'react-native-webview';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -115,46 +115,55 @@ export default function OrderWebView({
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Offline-Hinweis */}
-      {!connected && (
-        <View style={styles.offline}>
-          <Text>Keine Internetverbindung</Text>
-          <TouchableOpacity onPress={() => NetInfo.fetch().then(s => setConnected(!!s.isConnected))}>
-            <Text style={styles.retry}>Erneut versuchen</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      
-      {/* Loading Indicator */}
-      {loading && <ActivityIndicator size="large" style={styles.loader} />}
-      
-      {/* WebView ohne automatische Insets - SafeAreaView regelt das */}
-      <WebView
-        ref={webRef}
-        source={{ uri: startUrl }}
-        originWhitelist={['https://*']}
-        onNavigationStateChange={onNavChange}
-        onShouldStartLoadWithRequest={onShouldStart}
-        startInLoadingState
-        javaScriptEnabled
-        domStorageEnabled
-        sharedCookiesEnabled
-        thirdPartyCookiesEnabled
-        setSupportMultipleWindows={false}
-        injectedJavaScript={injectedJS}
-        onMessage={event => onEvent({ type: 'message', payload: event.nativeEvent.data })}
-        mixedContentMode={Platform.OS === 'android' ? 'always' : 'never'}
-        style={styles.webview}
-        // Pull-to-Refresh aktivieren
-        pullToRefreshEnabled={true}
-        bounces={true}
-        // Bessere Scroll-Performance
-        decelerationRate={0.998}
-        showsVerticalScrollIndicator={true}
-        showsHorizontalScrollIndicator={false}
+    <View style={styles.container}>
+      {/* StatusBar explizit konfigurieren */}
+      <StatusBar 
+        barStyle="dark-content"
+        backgroundColor="#F8E5C2"
+        translucent={false}
       />
-    </SafeAreaView>
+      
+      <SafeAreaView style={styles.safeArea}>
+        {/* Offline-Hinweis */}
+        {!connected && (
+          <View style={styles.offline}>
+            <Text>Keine Internetverbindung</Text>
+            <TouchableOpacity onPress={() => NetInfo.fetch().then(s => setConnected(!!s.isConnected))}>
+              <Text style={styles.retry}>Erneut versuchen</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        
+        {/* Loading Indicator */}
+        {loading && <ActivityIndicator size="large" style={styles.loader} />}
+        
+        {/* WebView */}
+        <WebView
+          ref={webRef}
+          source={{ uri: startUrl }}
+          originWhitelist={['https://*']}
+          onNavigationStateChange={onNavChange}
+          onShouldStartLoadWithRequest={onShouldStart}
+          startInLoadingState
+          javaScriptEnabled
+          domStorageEnabled
+          sharedCookiesEnabled
+          thirdPartyCookiesEnabled
+          setSupportMultipleWindows={false}
+          injectedJavaScript={injectedJS}
+          onMessage={event => onEvent({ type: 'message', payload: event.nativeEvent.data })}
+          mixedContentMode={Platform.OS === 'android' ? 'always' : 'never'}
+          style={styles.webview}
+          // Pull-to-Refresh aktivieren
+          pullToRefreshEnabled={true}
+          bounces={true}
+          // Bessere Scroll-Performance
+          decelerationRate={0.998}
+          showsVerticalScrollIndicator={true}
+          showsHorizontalScrollIndicator={false}
+        />
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -162,6 +171,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8E5C2', // Splash-Farbe für Übergänge
+  },
+  safeArea: {
+    flex: 1,
+    // Zusätzliches Padding für Android falls SafeAreaView nicht ausreicht
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0,
   },
   webview: {
     flex: 1,
