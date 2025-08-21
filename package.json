@@ -1,7 +1,7 @@
 {
   "name": "webviewapp",
   "version": "1.0.0",
-  "description": "React Native WebView App für Roemerhof Online-Bestellungen",
+  "description": "React Native WebView App für Online-Bestellungen",
   "main": "index.ts",
   "scripts": {
     "start": "expo start",

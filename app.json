@@ -11,20 +11,22 @@
       "resizeMode": "contain",
       "backgroundColor": "#F8E5C2"
     },
-    "updates": { "fallbackToCacheTimeout": 0 },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
     "userInterfaceStyle": "automatic",
     "statusBar": {
       "style": "auto"
     },
-    "ios": { 
-      "supportsTablet": false, 
-      "bundleIdentifier": "ch.roemerhof.webviewapp",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "ch.webviewapp",
       "statusBar": {
         "style": "auto"
       }
     },
-    "android": { 
-      "package": "ch.roemerhof.webviewapp",
+    "android": {
+      "package": "ch.webviewapp",
       "edgeToEdgeEnabled": false,
       "statusBar": {
         "style": "auto",
@@ -37,7 +39,10 @@
       "softwareKeyboardLayoutMode": "pan"
     },
     "extra": {
-      "startUrl": "https://roemerhof.kuriersoft.ch/"
+      "startUrl": "https://example.com/",
+      "eas": {
+        "projectId": "428d07f3-7b48-478d-ad9c-dbd1df57e34a"
+      }
     }
   }
 }

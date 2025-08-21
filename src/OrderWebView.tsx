@@ -12,7 +12,7 @@ type OrderWebViewProps = {
   onEvent?: (e: { type: string; payload?: any }) => void;
 };
 
-const DEFAULT_URL = 'https://roemerhof.kuriersoft.ch/';
+const DEFAULT_URL = 'https://example.com/';
 
 /**
  * Reusable WebView component for online ordering
@@ -33,7 +33,7 @@ export default function OrderWebView({
   visible,
   onClose,
   startUrl = DEFAULT_URL,
-  allowedHosts = ['roemerhof.kuriersoft.ch', 'www.roemerhof.kuriersoft.ch'],
+  allowedHosts = ['example.com', 'www.example.com'],
   disableZoom = true,
   onEvent = () => {}
 }: OrderWebViewProps) {

@@ -1,6 +1,6 @@
-# WebViewApp - React Native WebView für Roemerhof Bestellungen
+# WebViewApp - React Native WebView für Online-Bestellungen
 
-Eine vollständig konfigurierte React Native/Expo App mit WebView-Komponente für Online-Bestellungen über https://roemerhof.kuriersoft.ch/.
+Eine vollständig konfigurierte React Native/Expo App mit WebView-Komponente für Online-Bestellungen.
 
 ## 🚀 Features
 
@@ -12,7 +12,7 @@ Eine vollständig konfigurierte React Native/Expo App mit WebView-Komponente fü
 - **EAS Build** Konfiguration für `.aab` Erstellung
 
 ### UX/UI Features
-- **Direkter App-Start** zur Roemerhof URL (kein Startscreen)
+- **Direkter App-Start** zur konfigurierten URL (kein Startscreen)
 - **Dynamic Light/Dark Mode** Support mit automatischer StatusBar-Anpassung
 - **Pull-to-Refresh** Funktionalität
 - **Hardware Back Button** Navigation (Android)
@@ -82,13 +82,57 @@ npm run build:android:local
 # Keystore-Informationen anzeigen
 npm run credentials
 
-# ⚠️ WICHTIG: Keystore sicher ablegen!
-# Keystore niemals verlieren → sonst keine Play Store Updates möglich
+# Keystore herunterladen und sicher ablegen
+eas credentials -p android
+# → Keystore: Manage everything...
+# → Download Keystore
+# → Datei als "webviewapp-keystore.jks" speichern
 ```
+
+#### ⚠️ KRITISCH: Keystore Backup
+- **Keystore-Datei**: `webviewapp-keystore.jks` sicher ablegen
+- **Passwort**: Im Passwort-Manager speichern
+- **Backup**: Mehrere Kopien an verschiedenen Orten
+- **Package**: `ch.webviewapp`
+- **SHA1**: `51:92:8E:42:06:38:A0:C1:F4:14:B2:D5:93:FD:BA:2E:01:61:99:CA`
+
+**OHNE KEYSTORE = KEINE PLAY STORE UPDATES MÖGLICH!**
 
 ### 4. Build herunterladen
 - **EAS Dashboard**: https://expo.dev/accounts/[username]/projects/webviewapp/builds
 - `.aab` Datei herunterladen für Play Console Upload
+
+### 5. Aktueller Build-Status (Beispiel)
+```
+Build ID: 5047156c-9307-4040-9b52-6c01f10a0ac3
+Status: ✅ FINISHED
+Platform: Android
+Version: 1.0.0
+Build-Zeit: ~8 Minuten
+Download: https://expo.dev/artifacts/eas/aUXqVcbfbvbihN1KF3RdxD.aab
+```
+
+## 📱 Testing der .aab Datei
+
+### Google Play Console Internal Testing (EMPFOHLEN)
+1. **Play Console**: https://play.google.com/console/
+2. **Create app** → App-Details eingeben
+3. **Testing → Internal testing** → **Create new release**
+4. **.aab Datei hochladen** → **Release erstellen**
+5. **Tester hinzufügen** (eigene E-Mail)
+6. **Testing-Link** erhalten und App testen
+
+### Lokales Testing mit bundletool
+```bash
+# Bundletool herunterladen
+curl -L -o bundletool.jar https://github.com/google/bundletool/releases/latest/download/bundletool-all.jar
+
+# APKs generieren
+java -jar bundletool.jar build-apks --bundle=webviewapp.aab --output=webviewapp.apks
+
+# Auf Gerät installieren
+java -jar bundletool.jar install-apks --apks=webviewapp.apks
+```
 
 ## 🔧 Implementierte Verbesserungen
 
@@ -111,7 +155,7 @@ npm run credentials
 Vor der Veröffentlichung testen:
 
 ### Basis-Funktionalität
-- ✅ App öffnet **https://roemerhof.kuriersoft.ch/**
+- ✅ App öffnet **konfigurierte URL**
 - ✅ Navigation innerhalb erlaubter Hosts funktioniert
 - ✅ Externe Links öffnen sich im **Systembrowser**
 - ✅ **Session/Login** bleiben erhalten nach App-Restart
@@ -138,8 +182,8 @@ Wiederverwendbare WebView-Komponente mit folgenden Props:
 type OrderWebViewProps = {
   visible: boolean;                    // Component visibility
   onClose: () => void;                 // Close callback (unused in direct mode)
-  startUrl?: string;                   // Start URL (default: Roemerhof)
-  allowedHosts?: string[];             // Allowed hosts (default: roemerhof.kuriersoft.ch)
+  startUrl?: string;                   // Start URL (default: example.com)
+  allowedHosts?: string[];             // Allowed hosts (default: example.com)
   disableZoom?: boolean;               // Disable zoom (default: true)
   onEvent?: (e: {type: string; payload?: any}) => void;  // Event callbacks
 };
@@ -248,7 +292,7 @@ npm run credentials          # Keystore Management
 
 ---
 
-**Erstellt für**: Roemerhof Online-Bestellungen  
-**URL**: https://roemerhof.kuriersoft.ch/  
+**Erstellt für**: Online-Bestellungen  
+**URL**: Konfigurierbar  
 **Build-Target**: Android App Bundle (.aab)  
 **Framework**: React Native + Expo Managed Workflow

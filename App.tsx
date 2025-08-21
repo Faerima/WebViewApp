@@ -3,9 +3,9 @@ import { View, StyleSheet, useColorScheme } from 'react-native';
 import OrderWebView from './src/OrderWebView';
 
 /**
- * Roemerhof Orders App
+ * WebView Orders App
  * 
- * Launches directly with WebView for https://roemerhof.kuriersoft.ch/
+ * Launches directly with WebView for configurable URL
  * SafeAreaView is handled within OrderWebView component
  */
 export default function App() {
@@ -17,8 +17,8 @@ export default function App() {
       <OrderWebView
         visible={true}
         onClose={() => {}} // No closing possible - App is the WebView
-        startUrl="https://roemerhof.kuriersoft.ch/"
-        allowedHosts={['roemerhof.kuriersoft.ch','www.roemerhof.kuriersoft.ch']}
+        startUrl="https://example.com/"
+        allowedHosts={['example.com','www.example.com']}
         onEvent={(e) => {}} // Event handler for WebView events
       />
     </View>
