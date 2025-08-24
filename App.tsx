@@ -1,33 +1,43 @@
 import React from 'react';
-import { View, StyleSheet, useColorScheme } from 'react-native';
+import { StyleSheet, StatusBar, Platform } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import OrderWebView from './src/OrderWebView';
+import config from './config';
 
 /**
- * WebView Orders App
+ * WebView Orders App - Professional SafeArea Solution
  * 
- * Launches directly with WebView for configurable URL
- * SafeAreaView is handled within OrderWebView component
+ * Konfiguration erfolgt zentral in ./config.ts
+ * Restaurant-URL und erlaubte Hosts werden automatisch geladen
+ * Professionelle SafeArea-Integration für alle Geräte
  */
 export default function App() {
-  const colorScheme = useColorScheme();
-  const backgroundColor = colorScheme === 'dark' ? '#2C2C2E' : '#F8E5C2';
-  
   return (
-    <View style={[styles.container, { backgroundColor }]}>
-      <OrderWebView
-        visible={true}
-        onClose={() => {}} // No closing possible - App is the WebView
-        startUrl="https://example.com/"
-        allowedHosts={['example.com','www.example.com']}
-        onEvent={(e) => {}} // Event handler for WebView events
+    <SafeAreaProvider>
+      {/* StatusBar für moderne Geräte */}
+      <StatusBar 
+        barStyle="default"
+        backgroundColor="transparent"
+        translucent={true}
       />
-    </View>
+      
+      <SafeAreaView style={styles.container} edges={['top', 'bottom', 'left', 'right']}>
+        <OrderWebView
+          visible={true}
+          onClose={() => {}} // No closing possible - App is the WebView
+          // startUrl und allowedHosts werden automatisch aus config.ts geladen
+          disableZoom={true} // Für besseren Native App Look
+          onEvent={(e) => {}} // Event handler for WebView events
+        />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor is set dynamically based on color scheme
+    // SafeAreaView übernimmt automatisch die korrekte Notch/StatusBar-Behandlung
+    backgroundColor: '#FFFFFF', // Fallback-Farbe
   },
 });

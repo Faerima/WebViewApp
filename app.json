@@ -27,14 +27,10 @@
     },
     "android": {
       "package": "ch.webviewapp",
-      "edgeToEdgeEnabled": false,
       "statusBar": {
         "style": "auto",
-        "translucent": false,
-        "hidden": false
-      },
-      "navigationBar": {
-        "visible": true
+        "translucent": true,
+        "backgroundColor": "transparent"
       },
       "softwareKeyboardLayoutMode": "pan"
     },
