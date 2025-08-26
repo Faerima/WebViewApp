@@ -1,45 +1,77 @@
+/**
+ * RESTAURANT WEBVIEW KOMPONENTE
+ * ==============================
+ * 
+ * Diese Komponente ist das Herzstück der Restaurant-App und bietet
+ * eine vollständige native App-Erfahrung für Online-Bestellungen.
+ * 
+ * HAUPTFEATURES:
+ * - Vollbild-WebView ohne Browser-Interface
+ * - Alle Restaurant-Aktionen bleiben in der App (Payment, Checkout, etc.)
+ * - Automatische Konfiguration aus config.ts
+ * - Intelligente Link-Behandlung (Restaurant-Links vs. externe Links)
+ * - Offline-Erkennung mit Retry-Funktion
+ * - Hardware-Back-Button-Navigation (Android)
+ * - Native App Look & Feel
+ * 
+ * SICHERHEITSFEATURES:
+ * - Host-Whitelist für sichere Navigation
+ * - Payment-Provider automatisch erlaubt
+ * - Externe Links (App Store, etc.) öffnen externen Browser
+ * - Cookie-Support für Session-Management
+ */
+
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, ActivityIndicator, Linking, StyleSheet, Platform, BackHandler, StatusBar, useColorScheme } from 'react-native';
 import { WebView, WebViewNavigation, WebViewProps } from 'react-native-webview';
 import NetInfo from '@react-native-community/netinfo';
 import config from '../config';
 
+/**
+ * Props für OrderWebView Komponente
+ * ==================================
+ */
 type OrderWebViewProps = {
+  /** Sichtbarkeit der WebView (für zukünftige Modal-Features) */
   visible: boolean;
+  /** Callback beim Schließen (für zukünftige Modal-Features) */
   onClose: () => void;
+  /** Überschreibung der Start-URL (optional, wird aus config.ts geladen) */
   startUrl?: string;
+  /** Überschreibung der erlaubten Hosts (optional, wird aus config.ts geladen) */
   allowedHosts?: string[];
+  /** Zoom deaktivieren für Native App Look */
   disableZoom?: boolean;
+  /** Event-Callback für Navigation und Messages */
   onEvent?: (e: { type: string; payload?: any }) => void;
 };
 
 /**
- * Reusable WebView component for online ordering
+ * OrderWebView - Restaurant WebView Komponente
+ * =============================================
  * 
- * Features:
- * - Full-screen WebView without modal overlay
- * - Host whitelist for secure navigation
- * - External links open in system browser
- * - Offline detection with retry functionality
- * - Zoom disable for mobile optimization
- * - Event callbacks for navigation and messages
- * - Cookie support for session management
- * - Dynamic Light/Dark Mode support
- * - Hardware back button navigation (Android)
- * - Pull-to-refresh functionality
+ * Diese Komponente lädt die Restaurant-Website und stellt sicher,
+ * dass alle Restaurant-Funktionen (Bestellung, Payment, etc.) 
+ * innerhalb der App funktionieren.
+ * 
+ * AUTOMATISCHE KONFIGURATION:
+ * - startUrl: Wird aus config.url geladen
+ * - allowedHosts: Wird aus config.allowedHosts geladen
+ * - Keine manuellen Änderungen nötig für Restaurant-Wechsel!
  */
 export default function OrderWebView({
   visible,
   onClose,
-  startUrl = config.url,
-  allowedHosts = config.allowedHosts,
+  startUrl = config.url,              // ← Automatisch aus config.ts
+  allowedHosts = config.allowedHosts,  // ← Automatisch aus config.ts
   disableZoom = true,
   onEvent = () => {}
 }: OrderWebViewProps) {
-  const webRef = useRef<WebView>(null);
-  const [connected, setConnected] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [canGoBack, setCanGoBack] = useState(false);
+  // State Management für WebView-Funktionalität
+  const webRef = useRef<WebView>(null);           // Referenz zur WebView
+  const [connected, setConnected] = useState(true); // Internet-Verbindungsstatus
+  const [loading, setLoading] = useState(true);     // Lade-Status
+  const [canGoBack, setCanGoBack] = useState(false); // Back-Navigation möglich?
   const colorScheme = useColorScheme();
 
   // Monitor network connection

@@ -1,3 +1,16 @@
+/**
+ * HAUPTKOMPONENTE DER RESTAURANT-APP
+ * ==================================
+ * 
+ * Diese Komponente ist der Einstiegspunkt der App und konfiguriert:
+ * - SafeArea-Behandlung für alle Geräte (iPhone Notch, Android etc.)
+ * - StatusBar-Integration (Uhrzeit, Batterie bleiben sichtbar)
+ * - Automatisches Laden der Restaurant-Konfiguration aus config.ts
+ * 
+ * WICHTIG: Diese Datei muss normalerweise NICHT geändert werden!
+ * Alle Restaurant-spezifischen Einstellungen sind in config.ts
+ */
+
 import React from 'react';
 import { StyleSheet, StatusBar, Platform } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -5,39 +18,78 @@ import OrderWebView from './src/OrderWebView';
 import config from './config';
 
 /**
- * WebView Orders App - Professional SafeArea Solution
+ * Haupt-App-Komponente
+ * ====================
  * 
- * Konfiguration erfolgt zentral in ./config.ts
- * Restaurant-URL und erlaubte Hosts werden automatisch geladen
- * Professionelle SafeArea-Integration für alle Geräte
+ * Konfiguriert die App für professionelle Mobile Experience:
+ * 
+ * 1. SafeAreaProvider: Automatische Behandlung von Notch/StatusBar
+ * 2. StatusBar: Sichtbar mit transparentem Hintergrund
+ * 3. SafeAreaView: Verhindert Überlappung mit System-UI
+ * 4. OrderWebView: Die eigentliche Restaurant-WebView
+ * 
+ * Die Restaurant-Konfiguration wird automatisch aus config.ts geladen!
  */
 export default function App() {
   return (
     <SafeAreaProvider>
-      {/* StatusBar für moderne Geräte */}
+      {/* 
+        StatusBar-Konfiguration für moderne Mobile Experience
+        - barStyle="default": Automatische Farbanpassung (hell/dunkel)
+        - backgroundColor="transparent": Durchsichtige StatusBar
+        - translucent={true}: StatusBar überlagert Content nicht
+      */}
       <StatusBar 
         barStyle="default"
         backgroundColor="transparent"
         translucent={true}
       />
       
+      {/*
+        SafeAreaView mit vollständigen Edges
+        Verhindert, dass Content unter Notch/StatusBar/Navigation verschwindet
+        
+        edges={['top', 'bottom', 'left', 'right']}:
+        - top: Respektiert iPhone Notch/Dynamic Island
+        - bottom: Respektiert Home Indicator
+        - left/right: Respektiert Landscape-Modi
+      */}
       <SafeAreaView style={styles.container} edges={['top', 'bottom', 'left', 'right']}>
+        {/*
+          OrderWebView - Die eigentliche Restaurant-WebView
+          
+          Konfiguration erfolgt automatisch über config.ts:
+          - startUrl: Wird aus config.url geladen
+          - allowedHosts: Wird aus config.allowedHosts geladen
+          - disableZoom: Für besseren Native App Look
+          
+          KEINE manuellen Änderungen hier nötig!
+        */}
         <OrderWebView
           visible={true}
           onClose={() => {}} // No closing possible - App is the WebView
-          // startUrl und allowedHosts werden automatisch aus config.ts geladen
-          disableZoom={true} // Für besseren Native App Look
-          onEvent={(e) => {}} // Event handler for WebView events
+          disableZoom={true} // Zoom deaktiviert für Native App Look
+          onEvent={(e) => {}} // Event handler for WebView events (optional)
         />
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 
+/**
+ * StyleSheet für App-Container
+ * ============================
+ * 
+ * Minimale Styling-Konfiguration:
+ * - flex: 1 = Nutzt gesamten verfügbaren Bildschirm
+ * - backgroundColor: Fallback-Farbe für SafeAreaView
+ * 
+ * SafeAreaView übernimmt automatisch die korrekte
+ * Notch/StatusBar-Behandlung für alle Geräte!
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // SafeAreaView übernimmt automatisch die korrekte Notch/StatusBar-Behandlung
-    backgroundColor: '#FFFFFF', // Fallback-Farbe
+    backgroundColor: '#FFFFFF', // Fallback-Farbe (wird meist nicht sichtbar)
   },
 });
