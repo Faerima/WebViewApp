@@ -44,7 +44,7 @@ export interface RestaurantConfig {
  */
 const CURRENT_RESTAURANT: RestaurantConfig = {
   // Restaurant-URL - MUSS vollständige HTTPS-URL sein
-  url: 'https://roemerhof.kuriersoft.ch/',
+  url: 'https://pizzamadeinitaly.kuriersoft.ch/',
   
   /**
    * Erlaubte Hosts - WICHTIG für Sicherheit!
@@ -61,14 +61,8 @@ const CURRENT_RESTAURANT: RestaurantConfig = {
    * - Immer sowohl mit als auch ohne 'www.' angeben
    */
   allowedHosts: [
-    'roemerhof.kuriersoft.ch',          // Römerhof Hauptdomain
-    'www.roemerhof.kuriersoft.ch',      // Mit www
-    'der-roemerhof.kuriersoft.ch',      // Alternative Domain
-    'www.der-roemerhof.kuriersoft.ch',  // Alternative mit www
-    'kuriersoft.ch',                    // Kuriersoft Hauptdomain
-    'www.kuriersoft.ch',                // Kuriersoft mit www
-    'kurier.ch',                        // Legacy Domain
-    'www.kurier.ch'                     // Legacy mit www
+    'https://roemerhof.kuriersoft.ch',         
+
   ],
   
   // Restaurant-Name für Logging und Debugging
