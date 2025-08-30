@@ -6,16 +6,6 @@
  * welche Restaurant-Website geladen wird und welche Domains erlaubt sind.
  * 
  * WICHTIG: Für jeden Restaurant-Wechsel muss nur CURRENT_RESTAURANT geändert werden!
- * 
- * Unterstützte Kuriersoft-Restaurants:
- * - Pizzafulmine: https://pizzafulmine.kuriersoft.ch/
- * - Der Römerhof: https://roemerhof.kuriersoft.ch/ oder https://der-roemerhof.kuriersoft.ch/
- * - Weitere können einfach hinzugefügt werden
- */
-
-/**
- * Interface für Restaurant-Konfiguration
- * Definiert die Struktur für jede Restaurant-Konfiguration
  */
 export interface RestaurantConfig {
   /** 
