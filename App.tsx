@@ -12,7 +12,7 @@
  */
 
 import React from 'react';
-import { StyleSheet, StatusBar, Platform } from 'react-native';
+import { StyleSheet, StatusBar, Platform, useColorScheme } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import OrderWebView from './src/OrderWebView';
 import config from './config';
@@ -31,6 +31,10 @@ import config from './config';
  * Die Restaurant-Konfiguration wird automatisch aus config.ts geladen!
  */
 export default function App() {
+  // Automatische Erkennung des System-Themes (Light/Dark Mode)
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+
   return (
     <SafeAreaProvider>
       {/* 
@@ -54,7 +58,10 @@ export default function App() {
         - bottom: Respektiert Home Indicator
         - left/right: Respektiert Landscape-Modi
       */}
-      <SafeAreaView style={styles.container} edges={['top', 'bottom', 'left', 'right']}>
+      <SafeAreaView 
+        style={[styles.container, { backgroundColor: isDarkMode ? '#000000' : '#1a1a1a' }]} 
+        edges={['top', 'bottom', 'left', 'right']}
+      >
         {/*
           OrderWebView - Die eigentliche Restaurant-WebView
           
@@ -79,17 +86,19 @@ export default function App() {
 /**
  * StyleSheet für App-Container
  * ============================
- * 
+ *
  * Minimale Styling-Konfiguration:
  * - flex: 1 = Nutzt gesamten verfügbaren Bildschirm
- * - backgroundColor: transparent = Passt sich an WebView-Thema an (Light/Dark Mode)
- * 
+ * - backgroundColor: Wird dynamisch gesetzt basierend auf System-Theme
+ *   - Light Mode: Dunkelgrau (#1a1a1a) für StatusBar-Sichtbarkeit
+ *   - Dark Mode: Schwarz (#000000) für perfekte Integration
+ *
  * SafeAreaView übernimmt automatisch die korrekte
  * Notch/StatusBar-Behandlung für alle Geräte!
  */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent', // Transparent für WebView-Thema-Anpassung
+    // backgroundColor wird dynamisch in der Komponente gesetzt
   },
 });

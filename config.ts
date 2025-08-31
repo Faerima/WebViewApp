@@ -74,11 +74,6 @@ const getRestaurantName = (url: string): string => {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname;
 
-    // Versuche Restaurant-Name aus Domain zu extrahieren
-    if (hostname.includes('pizzafulmine')) return 'Pizzafulmine';
-    if (hostname.includes('roemerhof') || hostname.includes('römerhof')) return 'Römerhof';
-    if (hostname.includes('pizzamadeinitaly')) return 'Pizza Made in Italy';
-
     // Fallback: Domain als Name verwenden
     return hostname.split('.')[0];
   } catch {
