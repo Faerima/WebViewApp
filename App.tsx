@@ -35,12 +35,12 @@ export default function App() {
     <SafeAreaProvider>
       {/* 
         StatusBar-Konfiguration für moderne Mobile Experience
-        - barStyle="default": Automatische Farbanpassung (hell/dunkel)
+        - barStyle="light-content": Immer helle Texte (weiß) für beste Sichtbarkeit
         - backgroundColor="transparent": Durchsichtige StatusBar
         - translucent={true}: StatusBar überlagert Content nicht
       */}
       <StatusBar 
-        barStyle="default"
+        barStyle="light-content"
         backgroundColor="transparent"
         translucent={true}
       />
@@ -82,7 +82,7 @@ export default function App() {
  * 
  * Minimale Styling-Konfiguration:
  * - flex: 1 = Nutzt gesamten verfügbaren Bildschirm
- * - backgroundColor: Fallback-Farbe für SafeAreaView
+ * - backgroundColor: transparent = Passt sich an WebView-Thema an (Light/Dark Mode)
  * 
  * SafeAreaView übernimmt automatisch die korrekte
  * Notch/StatusBar-Behandlung für alle Geräte!
@@ -90,6 +90,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF', // Fallback-Farbe (wird meist nicht sichtbar)
+    backgroundColor: 'transparent', // Transparent für WebView-Thema-Anpassung
   },
 });
